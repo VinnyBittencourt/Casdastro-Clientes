@@ -18,6 +18,8 @@ export default class Clientes extends Component {
         email: "",
         cpf: "",
         list: [],
+        clienteInfo: {},
+        page: 1,
     };
 
     handleSubmit = async (e) => {
@@ -38,12 +40,27 @@ export default class Clientes extends Component {
         });
     };
 
-    async componentDidMount() {
+    async componentDidMount(page = 1) {
         //Componente que é executado assim que inicia a aplicação
-        const response = await api.get("/cliente");
+        const response = await api.get(`/cliente?page=${page}`);
         console.log(response.data);
-        this.setState({ list: response.data.docs });
+        const { docs, ...clienteInfo } = response.data;
+        this.setState({ list: docs, clienteInfo, page });
     }
+
+    nextPage = () => {
+        const { page, clienteInfo } = this.state;
+        if (page === clienteInfo.pages) return;
+        const pageNumber = page + 1;
+        this.componentDidMount(pageNumber);
+    };
+
+    prevPage = () => {
+        const { page } = this.state;
+        if (page === 1) return;
+        const pageNumber = page - 1;
+        this.componentDidMount(pageNumber);
+    };
 
     render() {
         const { nome, email, cpf, list } = this.state;
@@ -115,8 +132,8 @@ export default class Clientes extends Component {
                     </tbody>
                 </Table>
                 <Actions>
-                    <button>Anterior</button>
-                    <button>Próximo</button>
+                    <button onClick={this.prevPage}>Anterior</button>
+                    <button onClick={this.nextPage}>Próximo</button>
                 </Actions>
             </Container>
         );
