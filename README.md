@@ -1,2 +1,2 @@
 # Casdastro-Clientes
-Cadastro de Clientes com NodeJS e React
+Uma aplicação que cadastra clientes em um banco de dados usando NodeJS, React e MongoDB.
